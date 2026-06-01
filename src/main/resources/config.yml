@@ -1,0 +1,23 @@
+# Configuration de ServerForge
+
+shop:
+  main-title: "&8Boutique"
+  # Pourcentages par defaut appliques aux NOUVEAUX items.
+  # buy-step  : hausse du prix d'achat a chaque unite achetee (%)
+  # sell-step : baisse du prix a chaque unite vendue (%)
+  default-buy-step: 2.0
+  default-sell-step: 2.0
+  # Bornes du multiplicateur de prix (1.0 = prix initial)
+  min-multiplier: 0.25
+  max-multiplier: 4.0
+  # Vente = ce pourcentage du prix d'achat courant
+  sell-ratio: 0.5
+  # Delai (minutes) avant que TOUS les prix reviennent au prix initial. 0 = jamais.
+  reset-minutes: 30
+
+craft:
+  main-title: "&8Fabrication"
+
+chest:
+  # Delai de reset par defaut (en secondes) pour un nouveau coffre a butin. 86400 = 24h
+  default-reset-seconds: 86400

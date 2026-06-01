@@ -1,0 +1,38 @@
+name: ServerForge
+version: '${project.version}'
+main: dev.serverforge.ServerForgePlugin
+api-version: '1.21'
+authors: [ServerForge]
+description: Shop dynamique + fabrication d'armes + coffres a butin (tout editable en jeu)
+softdepend: [Vault]
+
+commands:
+  shop:
+    description: Ouvre le shop dynamique
+    usage: /shop
+    aliases: [magasin]
+  shopadmin:
+    description: Editeur du shop
+    usage: /shopadmin [reload]
+    permission: serverforge.admin
+  craft:
+    description: Ouvre le menu de fabrication
+    usage: /craft
+    aliases: [fabrication]
+  craftadmin:
+    description: Editeur des recettes
+    usage: /craftadmin [reload]
+    permission: serverforge.admin
+  lootchest:
+    description: Donne l'outil de configuration des coffres a butin
+    usage: /lootchest
+    aliases: [chesttool]
+    permission: serverforge.admin
+
+permissions:
+  serverforge.use:
+    description: Acces shop et craft
+    default: true
+  serverforge.admin:
+    description: Acces aux editeurs et a l'outil coffres
+    default: op
