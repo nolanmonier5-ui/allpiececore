@@ -28,6 +28,11 @@ commands:
     usage: /lootchest
     aliases: [chesttool]
     permission: serverforge.admin
+  sfreload:
+    description: Recharge tout le plugin ServerForge
+    usage: /sfreload
+    aliases: [serverforge, forgereload]
+    permission: serverforge.admin
 
 permissions:
   serverforge.use:

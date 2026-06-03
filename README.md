@@ -12,6 +12,24 @@ un plugin d'economie doivent etre installes sur le serveur pour les achats/vente
 ## Compilation
 Java 21 + Maven : `mvn clean package` -> `target/ServerForge-1.0.0.jar` dans `plugins/`.
 
+## Noms de menus (icone vs titre)
+
+Pour le shop ET la fabrication, chaque categorie a **deux noms distincts** :
+- **Nom (icone)** : le texte affiche sur l'icone dans le menu principal.
+- **Titre du menu** : le titre affiche EN HAUT du menu de la categorie quand on
+  l'ouvre. Independant, et il **supporte les caracteres custom** (police de GUI a
+  texture personnalisee). Editable en jeu (editeur de categorie) ou en config
+  (`menu-title`). Vide = reprend le nom de l'icone.
+
+Les **titres des menus principaux** (shop, fabrication) et le **titre du menu
+coffre** sont aussi editables : en jeu (boutons admin) et en config
+(`shop.main-title`, `craft.main-title`, `chest.gui-title`).
+
+## Recharger le plugin
+
+`/sfreload` (alias `/serverforge`, `/forgereload`) recharge config + shop + craft +
+coffres. `/shopadmin reload` et `/craftadmin reload` fonctionnent toujours aussi.
+
 ## Commandes
 | Commande | Effet | Permission |
 |----------|-------|------------|
@@ -21,6 +39,7 @@ Java 21 + Maven : `mvn clean package` -> `target/ServerForge-1.0.0.jar` dans `pl
 | `/craft` | Ouvre la fabrication | tous |
 | `/craftadmin` | Editeur des recettes | `serverforge.admin` |
 | `/lootchest` | Recoit l'outil coffres a butin | `serverforge.admin` |
+| `/sfreload` | Recharge tout le plugin | `serverforge.admin` |
 
 ## 1) Shop dynamique
 - Le prix d'un item monte de `buy-step %` a chaque unite **achetee**, baisse de

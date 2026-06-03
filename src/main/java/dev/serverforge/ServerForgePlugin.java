@@ -52,7 +52,7 @@ public class ServerForgePlugin extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new ChestListener(this), this);
 
         Commands cmd = new Commands(this);
-        for (String c : new String[]{"shop", "shopadmin", "craft", "craftadmin", "lootchest"}) {
+        for (String c : new String[]{"shop", "shopadmin", "craft", "craftadmin", "lootchest", "sfreload"}) {
             if (getCommand(c) != null) getCommand(c).setExecutor(cmd);
         }
 

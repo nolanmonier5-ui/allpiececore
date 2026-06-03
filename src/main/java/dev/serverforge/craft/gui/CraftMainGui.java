@@ -22,7 +22,7 @@ public class CraftMainGui extends Gui {
     public void build() {
         clear();
         boolean[] used = new boolean[54];
-        if (admin) used[49] = true;
+        if (admin) { used[49] = true; used[53] = true; }
         for (CraftCategory cat : plugin.craft().all()) {
             int slot = cat.getSlot();
             if (slot >= 0 && slot <= 53 && !used[slot]) { place(cat, slot); used[slot] = true; }
@@ -41,6 +41,14 @@ public class CraftMainGui extends Gui {
                                         if (cat == null) p.sendMessage(dev.serverforge.util.Text.color("&cExiste deja."));
                                         new CraftMainGui(plugin, p, true).open(p); },
                                     () -> new CraftMainGui(plugin, p, true).open(p)),
+                            () -> new CraftMainGui(plugin, p, true).open(p)));
+            setButton(53, new ItemBuilder(Material.OAK_SIGN)
+                    .name("&aTitre du menu principal")
+                    .lore("&7Actuel: &f" + plugin.craft().mainTitle(),
+                          "&8Supporte les caracteres custom.",
+                          "&eClique pour modifier").build(),
+                    (p, c) -> plugin.chat().request(p, "Nouveau titre du menu principal de la fabrication :",
+                            v -> { plugin.craft().setMainTitle(v); new CraftMainGui(plugin, p, true).open(p); },
                             () -> new CraftMainGui(plugin, p, true).open(p)));
         }
     }

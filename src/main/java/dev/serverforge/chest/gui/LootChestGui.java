@@ -21,7 +21,7 @@ public class LootChestGui extends Gui {
     private final Location loc;
 
     public LootChestGui(ServerForgePlugin plugin, Location loc) {
-        super("&8Coffre a butin", 6);
+        super(plugin.getConfig().getString("chest.gui-title", "&8Coffre a butin"), 6);
         this.plugin = plugin; this.loc = loc;
         build();
     }

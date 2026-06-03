@@ -19,6 +19,16 @@ public class Commands implements CommandExecutor {
                              @NotNull String label, @NotNull String[] args) {
         String name = command.getName().toLowerCase();
 
+        if (name.equals("sfreload")) {
+            if (!sender.hasPermission("serverforge.admin")) { sender.sendMessage(Text.color("&cPermission manquante.")); return true; }
+            plugin.reloadConfig();
+            plugin.shop().loadAll();
+            plugin.craft().loadAll();
+            plugin.chests().loadAll();
+            sender.sendMessage(Text.color("&aServerForge recharge (config + shop + craft + coffres)."));
+            return true;
+        }
+
         if (name.equals("shopadmin") || name.equals("craftadmin")) {
             if (!sender.hasPermission("serverforge.admin")) { sender.sendMessage(Text.color("&cPermission manquante.")); return true; }
             if (args.length >= 1 && args[0].equalsIgnoreCase("reload")) {

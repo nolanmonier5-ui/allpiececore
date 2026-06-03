@@ -22,7 +22,7 @@ public class CraftCategoryGui extends Gui {
     private final boolean admin;
 
     public CraftCategoryGui(ServerForgePlugin plugin, Player viewer, String categoryId, boolean admin) {
-        super(plugin.craft().get(categoryId) != null ? "&8" + plugin.craft().get(categoryId).getName() : "&8Craft", 6);
+        super(plugin.craft().get(categoryId) != null ? plugin.craft().get(categoryId).getMenuTitle() : "&8Craft", 6);
         this.plugin = plugin; this.categoryId = categoryId; this.admin = admin;
         build();
     }

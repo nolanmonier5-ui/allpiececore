@@ -19,5 +19,7 @@ craft:
   main-title: "&8Fabrication"
 
 chest:
+  # Titre du menu de config d'un coffre a butin (supporte les caracteres custom)
+  gui-title: "&8Coffre a butin"
   # Delai de reset par defaut (en secondes) pour un nouveau coffre a butin. 86400 = 24h
   default-reset-seconds: 86400

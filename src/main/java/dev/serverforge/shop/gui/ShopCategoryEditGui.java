@@ -22,9 +22,24 @@ public class ShopCategoryEditGui extends Gui {
     public void build() {
         clear();
         setButton(10, new ItemBuilder(Material.NAME_TAG)
-                .name("&aNom: &f" + cat.getName()).lore("&eClique pour renommer").build(),
-                (p, c) -> plugin.chat().request(p, "Nouveau nom de la categorie :",
+                .name("&aNom (icone): &f" + cat.getName())
+                .lore("&7Nom affiche SUR l'icone du menu principal.",
+                      "&eClique pour renommer").build(),
+                (p, c) -> plugin.chat().request(p, "Nom affiche sur l'icone :",
                         v -> { cat.setName(v); plugin.shop().saveAll(); reopen(p); }, () -> reopen(p)));
+
+        setButton(11, new ItemBuilder(Material.OAK_SIGN)
+                .name("&aTitre du menu: &f" + cat.getMenuTitle())
+                .lore("&7Titre EN HAUT du menu de la categorie.",
+                      "&8Independant du nom de l'icone.",
+                      "&8Supporte les caracteres custom (police GUI).",
+                      "&eClic gauche &7> definir",
+                      "&cClic droit &7> = nom de l'icone").build(),
+                (p, c) -> {
+                    if (c == ClickType.RIGHT) { cat.setMenuTitle(""); plugin.shop().saveAll(); reopen(p); return; }
+                    plugin.chat().request(p, "Titre du menu de la categorie :",
+                            v -> { cat.setMenuTitle(v); plugin.shop().saveAll(); reopen(p); }, () -> reopen(p));
+                });
 
         Material iconMat = Material.matchMaterial(cat.getIconMaterial());
         setButton(12, new ItemBuilder(iconMat != null ? iconMat : Material.CHEST)

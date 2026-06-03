@@ -23,6 +23,7 @@ public class ShopMainGui extends Gui {
     public void build() {
         clear();
         boolean[] used = new boolean[54];
+        if (admin) { used[48] = true; used[49] = true; used[50] = true; }
         for (ShopCategory cat : plugin.shop().all()) {
             int slot = cat.getSlot();
             if (slot >= 0 && slot <= 53 && !used[slot]) { place(cat, slot); used[slot] = true; }
@@ -33,8 +34,27 @@ public class ShopMainGui extends Gui {
             if (free < 0) break;
             place(cat, free); used[free] = true;
         }
-        if (plugin.shop().all().isEmpty())
+        if (plugin.shop().all().isEmpty() && !admin)
             setButton(22, new ItemBuilder(Material.BARRIER).name("&cAucune categorie").build(), null);
+
+        if (admin) {
+            setButton(48, new ItemBuilder(Material.NETHER_STAR).name("&aCreer une categorie").glow(true).build(),
+                    (p, c) -> plugin.chat().request(p, "Identifiant de la categorie (ex: minerais) :",
+                            id -> plugin.chat().request(p, "Nom affiche sur l'icone :",
+                                    name -> { ShopCategory cat = plugin.shop().create(id, name);
+                                        if (cat == null) p.sendMessage(dev.serverforge.util.Text.color("&cExiste deja."));
+                                        new ShopMainGui(plugin, p, true).open(p); },
+                                    () -> new ShopMainGui(plugin, p, true).open(p)),
+                            () -> new ShopMainGui(plugin, p, true).open(p)));
+            setButton(49, new ItemBuilder(Material.OAK_SIGN)
+                    .name("&aTitre du menu principal")
+                    .lore("&7Actuel: &f" + plugin.shop().mainTitle(),
+                          "&8Supporte les caracteres custom.",
+                          "&eClique pour modifier").build(),
+                    (p, c) -> plugin.chat().request(p, "Nouveau titre du menu principal du shop :",
+                            v -> { plugin.shop().setMainTitle(v); new ShopMainGui(plugin, p, true).open(p); },
+                            () -> new ShopMainGui(plugin, p, true).open(p)));
+        }
     }
 
     private void place(ShopCategory cat, int slot) {

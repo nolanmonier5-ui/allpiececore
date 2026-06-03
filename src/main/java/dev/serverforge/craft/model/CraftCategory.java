@@ -13,6 +13,7 @@ import java.util.Map;
 public class CraftCategory {
     private final String id;
     private String name;
+    private String menuTitle = "";
     private String iconMaterial = "ANVIL";
     private int iconModelData = -1;
     private int slot = -1;
@@ -23,6 +24,9 @@ public class CraftCategory {
     public String getId() { return id; }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+    public String getMenuTitle() { return menuTitle == null || menuTitle.isEmpty() ? name : menuTitle; }
+    public String getRawMenuTitle() { return menuTitle; }
+    public void setMenuTitle(String t) { this.menuTitle = t == null ? "" : t; }
     public String getIconMaterial() { return iconMaterial; }
     public void setIconMaterial(String m) { this.iconMaterial = m; }
     public int getIconModelData() { return iconModelData; }
@@ -41,6 +45,7 @@ public class CraftCategory {
 
     public void save(ConfigurationSection sec) {
         sec.set("name", name);
+        sec.set("menu-title", menuTitle);
         sec.set("icon.material", iconMaterial);
         if (iconModelData >= 0) sec.set("icon.model-data", iconModelData);
         sec.set("slot", slot);
@@ -50,6 +55,7 @@ public class CraftCategory {
 
     public static CraftCategory load(String id, ConfigurationSection sec) {
         CraftCategory c = new CraftCategory(id, sec.getString("name", id));
+        c.menuTitle = sec.getString("menu-title", "");
         c.iconMaterial = sec.getString("icon.material", "ANVIL");
         c.iconModelData = sec.getInt("icon.model-data", -1);
         c.slot = sec.getInt("slot", -1);

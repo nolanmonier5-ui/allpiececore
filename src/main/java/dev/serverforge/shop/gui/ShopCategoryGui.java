@@ -24,7 +24,7 @@ public class ShopCategoryGui extends Gui {
 
     public ShopCategoryGui(ServerForgePlugin plugin, Player viewer, String categoryId, boolean admin) {
         super(plugin.shop().get(categoryId) != null
-                ? "&8" + plugin.shop().get(categoryId).getName() : "&8Shop", 6);
+                ? plugin.shop().get(categoryId).getMenuTitle() : "&8Shop", 6);
         this.plugin = plugin;
         this.categoryId = categoryId;
         this.admin = admin;
