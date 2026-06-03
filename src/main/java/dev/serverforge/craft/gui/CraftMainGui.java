@@ -22,7 +22,7 @@ public class CraftMainGui extends Gui {
     public void build() {
         clear();
         boolean[] used = new boolean[54];
-        if (admin) { used[49] = true; used[53] = true; }
+        if (admin) { used[45] = true; used[49] = true; used[53] = true; }
         for (CraftCategory cat : plugin.craft().all()) {
             int slot = cat.getSlot();
             if (slot >= 0 && slot <= 53 && !used[slot]) { place(cat, slot); used[slot] = true; }
@@ -50,6 +50,13 @@ public class CraftMainGui extends Gui {
                     (p, c) -> plugin.chat().request(p, "Nouveau titre du menu principal de la fabrication :",
                             v -> { plugin.craft().setMainTitle(v); new CraftMainGui(plugin, p, true).open(p); },
                             () -> new CraftMainGui(plugin, p, true).open(p)));
+            setButton(45, new ItemBuilder(Material.ARROW)
+                    .name("&aFleche retour")
+                    .lore("&7Item, modeldata, nom, slot du bouton retour",
+                          "&7des menus de categorie (shop + craft).",
+                          "&eClique pour configurer").build(),
+                    (p, c) -> new dev.serverforge.util.BackButtonGui(plugin,
+                            () -> new CraftMainGui(plugin, p, true).open(p)).open(p));
         }
     }
 

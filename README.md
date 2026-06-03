@@ -25,6 +25,13 @@ Les **titres des menus principaux** (shop, fabrication) et le **titre du menu
 coffre** sont aussi editables : en jeu (boutons admin) et en config
 (`shop.main-title`, `craft.main-title`, `chest.gui-title`).
 
+## Fleche retour
+
+La fleche "retour" des menus de categorie (shop ET craft) est **entierement
+configurable** : item, CustomModelData, nom et slot. Editable en jeu (bouton
+"Fleche retour" dans `/shopadmin` et `/craftadmin`) ou en config (`back-button`
+dans `config.yml`). Choisir l'item se fait en cliquant dans ton inventaire.
+
 ## Recharger le plugin
 
 `/sfreload` (alias `/serverforge`, `/forgereload`) recharge config + shop + craft +

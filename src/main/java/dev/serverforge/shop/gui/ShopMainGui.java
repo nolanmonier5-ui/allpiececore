@@ -23,7 +23,7 @@ public class ShopMainGui extends Gui {
     public void build() {
         clear();
         boolean[] used = new boolean[54];
-        if (admin) { used[48] = true; used[49] = true; used[50] = true; }
+        if (admin) { used[47] = true; used[48] = true; used[49] = true; used[50] = true; }
         for (ShopCategory cat : plugin.shop().all()) {
             int slot = cat.getSlot();
             if (slot >= 0 && slot <= 53 && !used[slot]) { place(cat, slot); used[slot] = true; }
@@ -54,6 +54,13 @@ public class ShopMainGui extends Gui {
                     (p, c) -> plugin.chat().request(p, "Nouveau titre du menu principal du shop :",
                             v -> { plugin.shop().setMainTitle(v); new ShopMainGui(plugin, p, true).open(p); },
                             () -> new ShopMainGui(plugin, p, true).open(p)));
+            setButton(47, new ItemBuilder(Material.ARROW)
+                    .name("&aFleche retour")
+                    .lore("&7Item, modeldata, nom, slot du bouton retour",
+                          "&7des menus de categorie (shop + craft).",
+                          "&eClique pour configurer").build(),
+                    (p, c) -> new dev.serverforge.util.BackButtonGui(plugin,
+                            () -> new ShopMainGui(plugin, p, true).open(p)).open(p));
         }
     }
 

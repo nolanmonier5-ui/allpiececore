@@ -39,7 +39,9 @@ public class ShopCategoryGui extends Gui {
 
         double ratio = plugin.shop().sellRatio();
         boolean[] used = new boolean[54];
-        used[49] = true; // retour
+        int backSlot = dev.serverforge.util.BackButton.slot(plugin);
+        used[backSlot] = true;
+        if (admin) { used[48] = true; used[50] = true; }
 
         List<ShopItem> items = cat.itemList();
         for (ShopItem it : items) {
@@ -64,7 +66,7 @@ public class ShopCategoryGui extends Gui {
                     (p, c) -> new ShopCategoryEditGui(plugin, cat).open(p));
         }
 
-        setButton(49, new ItemBuilder(Material.ARROW).name("&eRetour").build(),
+        setButton(backSlot, dev.serverforge.util.BackButton.item(plugin),
                 (p, c) -> new ShopMainGui(plugin, p, admin).open(p));
     }
 

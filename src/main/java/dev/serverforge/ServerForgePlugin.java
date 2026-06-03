@@ -90,4 +90,14 @@ public class ServerForgePlugin extends JavaPlugin {
 
     public String getLastEditedChest() { return lastEditedChest; }
     public void setLastEditedChest(String key) { this.lastEditedChest = key; }
+
+    // ---- Fleche retour (partagee shop + craft) ----
+    public String backMaterial() { return getConfig().getString("back-button.material", "ARROW"); }
+    public int backModelData() { return getConfig().getInt("back-button.model-data", -1); }
+    public String backName() { return getConfig().getString("back-button.name", "&eRetour"); }
+    public int backSlot() { int s = getConfig().getInt("back-button.slot", 49); return (s < 0 || s > 53) ? 49 : s; }
+    public void setBackMaterial(String m) { getConfig().set("back-button.material", m); saveConfig(); }
+    public void setBackModelData(int d) { getConfig().set("back-button.model-data", d); saveConfig(); }
+    public void setBackName(String n) { getConfig().set("back-button.name", n); saveConfig(); }
+    public void setBackSlot(int s) { getConfig().set("back-button.slot", s); saveConfig(); }
 }

@@ -18,6 +18,13 @@ shop:
 craft:
   main-title: "&8Fabrication"
 
+# Fleche "retour" affichee dans les menus de categorie (shop ET craft).
+back-button:
+  material: ARROW
+  model-data: -1
+  name: "&eRetour"
+  slot: 49
+
 chest:
   # Titre du menu de config d'un coffre a butin (supporte les caracteres custom)
   gui-title: "&8Coffre a butin"

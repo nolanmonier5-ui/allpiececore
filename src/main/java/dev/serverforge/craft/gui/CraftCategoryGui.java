@@ -7,6 +7,7 @@ import dev.serverforge.util.Gui;
 import dev.serverforge.util.ItemBuilder;
 import dev.serverforge.util.Text;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -34,7 +35,9 @@ public class CraftCategoryGui extends Gui {
         if (cat == null) { setButton(22, new ItemBuilder(Material.BARRIER).name("&cIntrouvable").build(), null); return; }
 
         boolean[] used = new boolean[54];
-        used[49] = true;
+        int backSlot = dev.serverforge.util.BackButton.slot(plugin);
+        used[backSlot] = true;
+        if (admin) used[48] = true;
         List<Recipe> recipes = cat.recipeList();
         for (Recipe r : recipes) {
             int slot = r.getSlot();
@@ -56,7 +59,7 @@ public class CraftCategoryGui extends Gui {
                                       new RecipeEditGui(plugin, cat, r).open(p); },
                             () -> new CraftCategoryGui(plugin, p, categoryId, true).open(p)));
         }
-        setButton(49, new ItemBuilder(Material.ARROW).name("&eRetour").build(),
+        setButton(backSlot, dev.serverforge.util.BackButton.item(plugin),
                 (p, c) -> new CraftMainGui(plugin, p, admin).open(p));
     }
 
@@ -67,7 +70,7 @@ public class CraftCategoryGui extends Gui {
         lore.add(Text.item("&8&m                    "));
         lore.add(Text.item("&7Ingredients:"));
         for (ItemStack ing : r.getIngredients())
-            lore.add(Text.item(" &8- &f" + ing.getAmount() + "x " + pretty(ing)));
+            lore.add(Text.item(" &8- &f" + ing.getAmount() + "x " + displayName(ing)));
         if (r.getIngredients().isEmpty()) lore.add(Text.item(" &8(aucun)"));
         if (r.getCraftSeconds() > 0) lore.add(Text.item("&7Temps: &f" + r.getCraftSeconds() + "s"));
         lore.add(Text.item(""));
@@ -80,6 +83,21 @@ public class CraftCategoryGui extends Gui {
             if (admin && c.isRightClick()) { new RecipeEditGui(plugin, cat, r).open(p); return; }
             plugin.craftService().craft(p, r, () -> new CraftCategoryGui(plugin, p, categoryId, admin).open(p));
         });
+    }
+
+    /** Nom affiche d'un ingredient : son nom custom s'il en a un, sinon le materiau. */
+    private String displayName(ItemStack s) {
+        if (s != null && s.hasItemMeta()) {
+            ItemMeta meta = s.getItemMeta();
+            if (meta.hasDisplayName()) {
+                Component dn = meta.displayName();
+                if (dn != null) {
+                    // Reconvertit le nom custom en codes '&' pour l'afficher dans la lore.
+                    return LegacyComponentSerializer.legacyAmpersand().serialize(dn);
+                }
+            }
+        }
+        return pretty(s);
     }
 
     private String pretty(ItemStack s) {
