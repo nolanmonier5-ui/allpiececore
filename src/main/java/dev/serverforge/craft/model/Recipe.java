@@ -17,6 +17,7 @@ import java.util.UUID;
 public class Recipe {
     private final String id;
     private String name;
+    private String menuTitle = "";   // titre du menu de l'arme (vide = "&8" + name)
     private ItemStack result;
     private final List<ItemStack> ingredients = new ArrayList<>();
     private long craftSeconds = 0;
@@ -30,6 +31,9 @@ public class Recipe {
     public String getId() { return id; }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+    public String getMenuTitle() { return menuTitle == null || menuTitle.isEmpty() ? "&8" + name : menuTitle; }
+    public String getRawMenuTitle() { return menuTitle; }
+    public void setMenuTitle(String t) { this.menuTitle = t == null ? "" : t; }
     public ItemStack getResult() { return result; }
     public void setResult(ItemStack result) { this.result = result; }
     public List<ItemStack> getIngredients() { return ingredients; }
@@ -40,6 +44,7 @@ public class Recipe {
 
     public void save(ConfigurationSection sec) {
         sec.set("name", name);
+        sec.set("menu-title", menuTitle);
         sec.set("result", result);
         sec.set("craft-seconds", craftSeconds);
         sec.set("slot", slot);
@@ -50,6 +55,7 @@ public class Recipe {
 
     public static Recipe load(String id, ConfigurationSection sec) {
         Recipe r = new Recipe(id, sec.getString("name", id));
+        r.menuTitle = sec.getString("menu-title", "");
         r.result = sec.getItemStack("result");
         r.craftSeconds = sec.getLong("craft-seconds", 0);
         r.slot = sec.getInt("slot", -1);

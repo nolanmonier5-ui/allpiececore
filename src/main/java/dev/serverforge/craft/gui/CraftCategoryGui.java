@@ -74,14 +74,14 @@ public class CraftCategoryGui extends Gui {
         if (r.getIngredients().isEmpty()) lore.add(Text.item(" &8(aucun)"));
         if (r.getCraftSeconds() > 0) lore.add(Text.item("&7Temps: &f" + r.getCraftSeconds() + "s"));
         lore.add(Text.item(""));
-        lore.add(Text.item("&aClic gauche &7> fabriquer"));
+        lore.add(Text.item("&aClic gauche &7> ouvrir / fabriquer"));
         if (admin) lore.add(Text.item("&dClic droit &7> editer"));
         meta.lore(lore);
         disp.setItemMeta(meta);
 
         setButton(slot, disp, (p, c) -> {
             if (admin && c.isRightClick()) { new RecipeEditGui(plugin, cat, r).open(p); return; }
-            plugin.craftService().craft(p, r, () -> new CraftCategoryGui(plugin, p, categoryId, admin).open(p));
+            new RecipeViewGui(plugin, p, cat, r, admin).open(p);
         });
     }
 

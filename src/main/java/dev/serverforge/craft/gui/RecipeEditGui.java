@@ -70,6 +70,19 @@ public class RecipeEditGui extends Gui {
                 (p, c) -> { sync(); plugin.chat().request(p, "Nom de la recette :",
                         v -> { recipe.setName(v); plugin.craft().saveAll(); reopen(p); }, () -> reopen(p)); });
 
+        setButton(30, new ItemBuilder(Material.OAK_SIGN)
+                .name("&aTitre du menu de l'arme: &f" + recipe.getMenuTitle())
+                .lore("&7Titre EN HAUT du menu dedie a cette arme.",
+                      "&8Supporte les caracteres custom (police GUI).",
+                      "&eClic gauche &7> definir",
+                      "&cClic droit &7> defaut (&8 + nom)").build(),
+                (p, c) -> {
+                    if (c == ClickType.RIGHT) { sync(); recipe.setMenuTitle(""); plugin.craft().saveAll(); reopen(p); return; }
+                    sync();
+                    plugin.chat().request(p, "Titre du menu de l'arme :",
+                            v -> { recipe.setMenuTitle(v); plugin.craft().saveAll(); reopen(p); }, () -> reopen(p));
+                });
+
         setButton(31, new ItemBuilder(Material.LIME_CONCRETE)
                 .name("&aEnregistrer").lore("&7Lit les items places et sauvegarde.").build(),
                 (p, c) -> { sync(); p.sendMessage(Text.color("&aRecette enregistree.")); reopen(p); });
