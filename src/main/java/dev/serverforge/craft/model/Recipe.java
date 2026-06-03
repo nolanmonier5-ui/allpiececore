@@ -21,7 +21,8 @@ public class Recipe {
     private ItemStack result;
     private final List<ItemStack> ingredients = new ArrayList<>();
     private long craftSeconds = 0;
-    private int slot = -1;
+    private int slot = -1;       // emplacement de l'icone dans la liste de la categorie
+    private int viewSlot = 22;   // emplacement de l'arme dans son propre menu
 
     public Recipe(String id, String name) { this.id = id; this.name = name; }
     public static Recipe create(String name) {
@@ -41,6 +42,8 @@ public class Recipe {
     public void setCraftSeconds(long s) { this.craftSeconds = Math.max(0, s); }
     public int getSlot() { return slot; }
     public void setSlot(int slot) { this.slot = slot; }
+    public int getViewSlot() { return viewSlot; }
+    public void setViewSlot(int s) { this.viewSlot = (s < 0 || s > 53) ? 22 : s; }
 
     public void save(ConfigurationSection sec) {
         sec.set("name", name);
@@ -48,6 +51,7 @@ public class Recipe {
         sec.set("result", result);
         sec.set("craft-seconds", craftSeconds);
         sec.set("slot", slot);
+        sec.set("view-slot", viewSlot);
         ConfigurationSection ing = sec.createSection("ingredients");
         int i = 0;
         for (ItemStack s : ingredients) ing.set("i" + (i++), s);
@@ -59,6 +63,7 @@ public class Recipe {
         r.result = sec.getItemStack("result");
         r.craftSeconds = sec.getLong("craft-seconds", 0);
         r.slot = sec.getInt("slot", -1);
+        r.viewSlot = sec.getInt("view-slot", 22);
         ConfigurationSection ing = sec.getConfigurationSection("ingredients");
         if (ing != null) {
             for (String key : ing.getKeys(false)) {

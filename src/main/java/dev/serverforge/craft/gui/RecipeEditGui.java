@@ -88,9 +88,17 @@ public class RecipeEditGui extends Gui {
                 (p, c) -> { sync(); p.sendMessage(Text.color("&aRecette enregistree.")); reopen(p); });
 
         setButton(33, new ItemBuilder(Material.ITEM_FRAME)
-                .name("&aEmplacement: &f" + (recipe.getSlot() < 0 ? "auto" : recipe.getSlot())).build(),
+                .name("&aEmplacement (liste): &f" + (recipe.getSlot() < 0 ? "auto" : recipe.getSlot()))
+                .lore("&7Position de l'icone dans la liste de la categorie.").build(),
                 (p, c) -> { sync(); new dev.serverforge.util.SlotPicker("&8Emplacement recette", recipe.getSlot(),
                         s -> { recipe.setSlot(s); plugin.craft().saveAll(); reopen(p); }, () -> reopen(p)).open(p); });
+
+        setButton(32, new ItemBuilder(Material.PAINTING)
+                .name("&aEmplacement de l'arme (menu): &f" + recipe.getViewSlot())
+                .lore("&7Position de l'arme dans son menu dedie.",
+                      "&eClique pour choisir").build(),
+                (p, c) -> { sync(); new dev.serverforge.util.SlotPicker("&8Emplacement de l'arme", recipe.getViewSlot(),
+                        s -> { recipe.setViewSlot(s); plugin.craft().saveAll(); reopen(p); }, () -> reopen(p)).open(p); });
 
         setButton(34, new ItemBuilder(Material.BARRIER)
                 .name("&cSupprimer / Retour")

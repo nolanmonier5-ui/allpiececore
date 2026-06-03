@@ -17,9 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Menu dedie a UNE arme/recette. Affiche les ingredients requis, l'arme produite,
- * et permet de la fabriquer en cliquant dessus. Contient le bouton retour configurable
- * (qui ramene au menu de la categorie).
+ * Menu dedie a UNE arme : uniquement l'arme (cliquable pour fabriquer) et le bouton retour.
+ * Emplacement de l'arme, titre du menu et bouton retour 100% configurables.
  */
 public class RecipeViewGui extends Gui {
 
@@ -28,35 +27,24 @@ public class RecipeViewGui extends Gui {
     private final Recipe recipe;
     private final boolean admin;
 
-    private static final int[] INGREDIENT_SLOTS = {10, 11, 12, 13, 14, 15, 16};
-    private static final int RESULT_SLOT = 31;
-
     public RecipeViewGui(ServerForgePlugin plugin, Player viewer, CraftCategory cat, Recipe recipe, boolean admin) {
-        super(title(recipe), 6);
+        super(recipe.getMenuTitle(), 6);
         this.plugin = plugin; this.cat = cat; this.recipe = recipe; this.admin = admin;
         build();
-    }
-
-    private static String title(Recipe r) {
-        return r.getMenuTitle();
     }
 
     @Override
     public void build() {
         clear();
 
-        // Ingredients (affichage informatif : nom custom + quantite + possede/requis)
-        List<ItemStack> ings = recipe.getIngredients();
-        for (int i = 0; i < INGREDIENT_SLOTS.length; i++) {
-            if (i >= ings.size()) continue;
-            ItemStack ing = ings.get(i);
-            setButton(INGREDIENT_SLOTS[i], ingredientDisplay(ing), null);
-        }
+        int backSlot = BackButton.slot(plugin);
+        int weaponSlot = recipe.getViewSlot();
+        if (weaponSlot < 0 || weaponSlot > 53) weaponSlot = 22;
+        if (weaponSlot == backSlot) weaponSlot = (backSlot == 22) ? 13 : 22; // evite la collision
 
-        // L'arme produite : clic = fabriquer
         ItemStack result = recipe.getResult();
         if (result == null) {
-            setButton(RESULT_SLOT, new ItemBuilder(Material.BARRIER)
+            setButton(weaponSlot, new ItemBuilder(Material.BARRIER)
                     .name("&cRecette incomplete").lore("&7Aucun item de sortie defini.").build(), null);
         } else {
             ItemStack disp = result.clone();
@@ -68,35 +56,12 @@ public class RecipeViewGui extends Gui {
             lore.add(Text.item("&aClique pour fabriquer"));
             meta.lore(lore);
             disp.setItemMeta(meta);
-            setButton(RESULT_SLOT, disp, (p, c) ->
+            setButton(weaponSlot, disp, (p, c) ->
                     plugin.craftService().craft(p, recipe,
                             () -> new RecipeViewGui(plugin, p, cat, recipe, admin).open(p)));
         }
 
-        // Bouton "Fabriquer" explicite (en plus du clic sur l'arme)
-        setButton(40, new ItemBuilder(Material.ANVIL)
-                .name("&aFabriquer").lore("&7Consomme les ingredients requis.").build(),
-                (p, c) -> plugin.craftService().craft(p, recipe,
-                        () -> new RecipeViewGui(plugin, p, cat, recipe, admin).open(p)));
-
-        if (admin) {
-            setButton(8, new ItemBuilder(Material.WRITABLE_BOOK)
-                    .name("&dEditer cette recette").build(),
-                    (p, c) -> new RecipeEditGui(plugin, cat, recipe).open(p));
-        }
-
-        // Bouton retour configurable -> menu de la categorie
-        setButton(BackButton.slot(plugin), BackButton.item(plugin),
+        setButton(backSlot, BackButton.item(plugin),
                 (p, c) -> new CraftCategoryGui(plugin, p, cat.getId(), admin).open(p));
-    }
-
-    private ItemStack ingredientDisplay(ItemStack ing) {
-        ItemStack disp = ing.clone();
-        ItemMeta meta = disp.getItemMeta();
-        List<Component> lore = meta.hasLore() ? new ArrayList<>(meta.lore()) : new ArrayList<>();
-        lore.add(Text.item("&7Requis: &f" + ing.getAmount()));
-        meta.lore(lore);
-        disp.setItemMeta(meta);
-        return disp;
     }
 }
