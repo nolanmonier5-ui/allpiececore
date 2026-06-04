@@ -3,6 +3,7 @@ package dev.serverforge.shop;
 import dev.serverforge.ServerForgePlugin;
 import dev.serverforge.shop.model.ShopCategory;
 import dev.serverforge.shop.model.ShopItem;
+import dev.serverforge.shop.model.ShopMenuEntry;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -21,6 +22,7 @@ public class ShopManager {
     private final ServerForgePlugin plugin;
     private final File file;
     private final Map<String, ShopCategory> categories = new LinkedHashMap<>();
+    private final Map<String, ShopMenuEntry> entries = new LinkedHashMap<>();
 
     public ShopManager(ServerForgePlugin plugin) {
         this.plugin = plugin;
@@ -40,6 +42,7 @@ public class ShopManager {
     // ---- Load / save ----
     public void loadAll() {
         categories.clear();
+        entries.clear();
         if (file.exists()) {
             YamlConfiguration cfg = YamlConfiguration.loadConfiguration(file);
             ConfigurationSection root = cfg.getConfigurationSection("categories");
@@ -47,6 +50,13 @@ public class ShopManager {
                 for (String id : root.getKeys(false)) {
                     ConfigurationSection s = root.getConfigurationSection(id);
                     if (s != null) categories.put(id, ShopCategory.load(id, s));
+                }
+            }
+            ConfigurationSection er = cfg.getConfigurationSection("entries");
+            if (er != null) {
+                for (String id : er.getKeys(false)) {
+                    ConfigurationSection s = er.getConfigurationSection(id);
+                    if (s != null) entries.put(id, ShopMenuEntry.load(id, s));
                 }
             }
         }
@@ -61,6 +71,8 @@ public class ShopManager {
         YamlConfiguration cfg = new YamlConfiguration();
         ConfigurationSection root = cfg.createSection("categories");
         for (ShopCategory c : categories.values()) c.save(root.createSection(c.getId()));
+        ConfigurationSection er = cfg.createSection("entries");
+        for (ShopMenuEntry e : entries.values()) e.save(er.createSection(e.getId()));
         try { cfg.save(file); }
         catch (IOException e) { plugin.getLogger().severe("Echec sauvegarde shop.yml: " + e.getMessage()); }
     }
@@ -73,9 +85,36 @@ public class ShopManager {
         saveAll();
         return c;
     }
-    public void delete(String id) { categories.remove(id); saveAll(); }
+    public void delete(String id) {
+        categories.remove(id);
+        entries.values().removeIf(e -> e.getCategoryId().equals(id));
+        saveAll();
+    }
     public ShopCategory get(String id) { return categories.get(id); }
     public List<ShopCategory> all() { return new ArrayList<>(categories.values()); }
+
+    // ---- Icones du menu principal (entrees) ----
+    public List<ShopMenuEntry> entries() { return new ArrayList<>(entries.values()); }
+    public List<ShopMenuEntry> entriesFor(String categoryId) {
+        List<ShopMenuEntry> out = new ArrayList<>();
+        for (ShopMenuEntry e : entries.values()) if (e.getCategoryId().equals(categoryId)) out.add(e);
+        return out;
+    }
+    public ShopMenuEntry getEntry(String id) { return entries.get(id); }
+    public ShopMenuEntry createEntry(String categoryId, String displayName, String iconMaterial, int iconModelData) {
+        ShopMenuEntry e = ShopMenuEntry.create(categoryId, displayName);
+        e.setIconMaterial(iconMaterial == null ? "CHEST" : iconMaterial);
+        e.setIconModelData(iconModelData);
+        entries.put(e.getId(), e);
+        saveAll();
+        return e;
+    }
+    public void deleteEntry(String id) { entries.remove(id); saveAll(); }
+    /** true si une categorie possede au moins une icone custom dans le menu principal. */
+    public boolean hasEntry(String categoryId) {
+        for (ShopMenuEntry e : entries.values()) if (e.getCategoryId().equals(categoryId)) return true;
+        return false;
+    }
 
     /** Reinitialise tous les prix au prix initial (appele periodiquement). */
     public void resetAllPrices() {

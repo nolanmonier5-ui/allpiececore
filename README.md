@@ -25,6 +25,15 @@ Les **titres des menus principaux** (shop, fabrication) et le **titre du menu
 coffre** sont aussi editables : en jeu (boutons admin) et en config
 (`shop.main-title`, `craft.main-title`, `chest.gui-title`).
 
+## Icones du menu principal du shop
+
+Dans `/shopadmin` -> **Icones du menu principal**. Tu peux creer **autant d'icones
+que tu veux**, chacune ouvrant une categorie, avec son **nom affiche propre**, son
+item + CustomModelData (choisi dans l'inventaire) et son slot. **Plusieurs icones
+peuvent ouvrir la meme categorie** (ex: 4 icones "Minerais" a des emplacements
+differents). Une categorie sans icone custom recoit une icone auto pour rester
+visible. Stocke dans `shop.yml` (section `entries`).
+
 ## Fleche retour
 
 La fleche "retour" des menus de categorie (shop ET craft) est **entierement
