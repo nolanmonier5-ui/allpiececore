@@ -18,6 +18,8 @@ public class LootChest {
     private final List<LootEntry> loot = new ArrayList<>();
     private long resetSeconds;
     private long lastFilled = 0;
+    // Uniques places dans ce coffre en attente d'etre lootes (non sauvegarde).
+    private final transient List<LootEntry> pendingOneTime = new ArrayList<>();
 
     public LootChest(Location loc, long resetSeconds) {
         this.world = loc.getWorld().getName();
@@ -41,12 +43,23 @@ public class LootChest {
     public String getWorld() { return world; }
     public int getX() { return x; } public int getY() { return y; } public int getZ() { return z; }
 
-    /** Copie le loot + le delai d'un autre coffre (pour la fonction "copier la config"). */
+    public List<LootEntry> pendingOneTime() { return pendingOneTime; }
+
+    /** Copie le loot + le delai d'un autre coffre (snapshot, sans risque d'auto-copie). */
     public void copyFrom(LootChest other) {
+        if (other == this) return;
+        applyConfig(other.loot, other.resetSeconds);
+    }
+
+    /** Applique une config (liste de loot + delai). Utilise pour le presse-papier. */
+    public void applyConfig(List<LootEntry> sourceLoot, long resetSeconds) {
+        List<LootEntry> snapshot = new ArrayList<>(sourceLoot);
         loot.clear();
-        for (LootEntry e : other.loot) loot.add(new LootEntry(e.getItem().clone(), e.getChance()));
-        this.resetSeconds = other.resetSeconds;
+        for (LootEntry e : snapshot)
+            loot.add(new LootEntry(e.getItem().clone(), e.getChance(), e.isOneTime()));
+        this.resetSeconds = resetSeconds;
         this.lastFilled = 0;
+        this.pendingOneTime.clear();
     }
 
     public void save(ConfigurationSection sec) {

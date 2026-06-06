@@ -83,7 +83,12 @@ coffres. `/shopadmin reload` et `/craftadmin reload` fonctionnent toujours aussi
 - `/lootchest` te donne l'outil.
 - **Clic droit** sur un coffre : ouvre la config (items + % de drop, delai de reset).
   Le coffre se re-remplit automatiquement quand le delai est ecoule, a l'ouverture.
-- **Clic gauche** sur un autre coffre : copie la config du dernier coffre configure.
+- **Clic gauche** sur un coffre configure : **copie** sa config (loot + chances + delai)
+  dans le presse-papier. **Shift + clic gauche** sur un autre coffre : **colle** cette
+  config dessus.
+- **Items uniques** : dans la config d'un coffre, clic droit sur un item pour le rendre
+  "unique". Une fois loote par un joueur, il est retire de **tous** les coffres a butin
+  (ne reapparaitra plus nulle part). Note: detecte sur les coffres simples (pas double).
 - Delai de reset par coffre (ex: `24h`, `30m`, `0` = jamais). "Remplir maintenant"
   pour forcer. "Supprimer" pour le redevenir coffre normal.
 

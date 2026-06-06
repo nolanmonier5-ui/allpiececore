@@ -39,11 +39,14 @@ public class LootChestGui extends Gui {
             ItemMeta meta = disp.getItemMeta();
             List<Component> lore = meta.hasLore() ? new ArrayList<>(meta.lore()) : new ArrayList<>();
             lore.add(Text.item("&7Chance: &e" + e.getChance() + "%"));
+            lore.add(Text.item("&7Unique: " + (e.isOneTime() ? "&aoui &7(retire de tous les coffres une fois loote)" : "&cnon")));
             lore.add(Text.item("&eClic gauche &7> changer la chance"));
+            lore.add(Text.item("&dClic droit &7> basculer unique"));
             lore.add(Text.item("&cShift + droit &7> retirer"));
             meta.lore(lore); disp.setItemMeta(meta);
             setButton(i, disp, (p, c) -> {
                 if (c == ClickType.SHIFT_RIGHT) { loot.remove(e); plugin.chests().saveAll(); build(); }
+                else if (c == ClickType.RIGHT) { e.setOneTime(!e.isOneTime()); plugin.chests().saveAll(); build(); }
                 else plugin.chat().request(p, "Chance de drop en % (0-100) :",
                         v -> { try { e.setChance(Double.parseDouble(v.trim().replace(",", "."))); } catch (Exception ignored) {}
                                plugin.chests().saveAll(); new LootChestGui(plugin, loc).open(p); },
@@ -52,7 +55,8 @@ public class LootChestGui extends Gui {
         }
 
         setButton(47, new ItemBuilder(Material.HOPPER).name("&aAjouter un item").glow(true)
-                .lore("&7Choisis un item de ton inventaire + sa chance").build(),
+                .lore("&7Choisis un item de ton inventaire + sa chance.",
+                      "&7Ensuite, clic droit sur l'item pour le rendre 'unique'.").build(),
                 (p, c) -> new ItemPicker(p, "&8Item du coffre",
                         s -> { ItemStack copy = s.clone();
                             plugin.chat().request(p, "Chance de drop en % (0-100) :",

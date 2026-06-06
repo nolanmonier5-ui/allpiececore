@@ -27,7 +27,9 @@ public class ServerForgePlugin extends JavaPlugin {
     private ChestManager chestManager;
     private ChestTool chestTool;
 
-    private String lastEditedChest = null; // pour la fonction "copier la config"
+    private String lastEditedChest = null; // conserve pour compat
+    private java.util.List<dev.serverforge.chest.model.LootEntry> clipboardLoot = null;
+    private long clipboardReset = 86400;
 
     @Override
     public void onEnable() {
@@ -90,6 +92,19 @@ public class ServerForgePlugin extends JavaPlugin {
 
     public String getLastEditedChest() { return lastEditedChest; }
     public void setLastEditedChest(String key) { this.lastEditedChest = key; }
+
+    // ---- Presse-papier de config de coffre (copier/coller) ----
+    public boolean hasClipboard() { return clipboardLoot != null; }
+    public int clipboardSize() { return clipboardLoot == null ? 0 : clipboardLoot.size(); }
+    public long clipboardReset() { return clipboardReset; }
+    public java.util.List<dev.serverforge.chest.model.LootEntry> clipboardLoot() { return clipboardLoot; }
+    public void copyToClipboard(java.util.List<dev.serverforge.chest.model.LootEntry> loot, long reset) {
+        this.clipboardLoot = new java.util.ArrayList<>();
+        for (dev.serverforge.chest.model.LootEntry e : loot)
+            this.clipboardLoot.add(new dev.serverforge.chest.model.LootEntry(
+                    e.getItem().clone(), e.getChance(), e.isOneTime()));
+        this.clipboardReset = reset;
+    }
 
     // ---- Fleche retour (partagee shop + craft) ----
     public String backMaterial() { return getConfig().getString("back-button.material", "ARROW"); }

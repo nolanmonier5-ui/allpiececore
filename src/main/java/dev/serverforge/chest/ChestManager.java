@@ -9,6 +9,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,12 +75,37 @@ public class ChestManager {
         }
         Inventory inv = chest.getInventory();
         inv.clear();
+        cfg.pendingOneTime().clear();
         for (LootEntry e : cfg.getLoot()) {
             if (ThreadLocalRandom.current().nextDouble(100) < e.getChance()) {
                 inv.addItem(e.getItem().clone());
+                if (e.isOneTime()) cfg.pendingOneTime().add(e); // a surveiller a la fermeture
             }
         }
         cfg.setLastFilled(now);
         saveAll();
+    }
+
+    /**
+     * Retire de TOUS les coffres les loots equivalents (meme type + CMD) a l'item donne.
+     * Appele quand un item "unique" a ete loote : il ne reapparaitra plus nulle part.
+     */
+    public void consumeOneTime(ItemStack proto) {
+        if (proto == null) return;
+        int cmd = dev.serverforge.util.ItemUtil.readModelData(proto);
+        int removed = 0;
+        for (LootChest c : chests.values()) {
+            var it = c.getLoot().iterator();
+            while (it.hasNext()) {
+                LootEntry e = it.next();
+                if (e.isOneTime() && e.getItem().getType() == proto.getType()
+                        && dev.serverforge.util.ItemUtil.readModelData(e.getItem()) == cmd) {
+                    it.remove(); removed++;
+                }
+            }
+            c.pendingOneTime().removeIf(e -> e.getItem().getType() == proto.getType()
+                    && dev.serverforge.util.ItemUtil.readModelData(e.getItem()) == cmd);
+        }
+        if (removed > 0) saveAll();
     }
 }

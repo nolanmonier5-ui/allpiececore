@@ -21,7 +21,8 @@ public class ChestTool {
         ItemStack tool = new ItemBuilder(Material.BLAZE_ROD)
                 .name("&6Outil Coffre a Butin")
                 .lore("&7Clic droit sur un coffre &f> configurer / remplir",
-                      "&7Clic gauche sur un coffre &f> copier la derniere config",
+                      "&7Clic gauche sur un coffre &f> copier la config",
+                      "&7Shift + clic gauche &f> coller la config",
                       "&8Le coffre se reinitialise selon le delai choisi.")
                 .glow(true).build();
         var meta = tool.getItemMeta();
